@@ -202,5 +202,6 @@
         private DataGridViewTextBoxColumn cardRarity;
         private DataGridViewTextBoxColumn cardSet;
         private DataGridViewTextBoxColumn cardPrice;
+        private Button button1;
     }
 }
