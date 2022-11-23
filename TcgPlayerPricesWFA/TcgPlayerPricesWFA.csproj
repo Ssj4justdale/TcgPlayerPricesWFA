@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="libcurl.NET.x64" Version="1.4.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Program.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Remove="C:\Users\Byond\.nuget\packages\libcurl.net.x64\1.4.1\build\\LibCurlShim.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Byond\.nuget\packages\libcurl.net.x64\1.4.1\build\\LibCurlShim.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="C:\Users\Byond\.nuget\packages\libcurl.net.x64\1.4.1\build\\libcurl.dll">
+      <CustomToolNamespace>CURL</CustomToolNamespace>
+    </None>
+  </ItemGroup>
+
+</Project>
