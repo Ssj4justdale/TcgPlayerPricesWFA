@@ -15,6 +15,42 @@ namespace TcgPlayerPricesWFA
 {
     internal class TcgParser
     {
+        public static string GetCardPriceHistory(string _productID)
+        {
+            //https://infinite-api.tcgplayer.com/price/history/284948?range=month
+            //https://infinite-api.tcgplayer.com/price/history/284948?range=quarter
+            //https://infinite-api.tcgplayer.com/price/history/284948?range=semi-annual
+            //https://infinite-api.tcgplayer.com/price/history/284948?range=annual
+
+            using (var client = new HttpClient())
+            {
+                var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+                var baseAddress = "https://infinite-api.tcgplayer.com/";
+                var api = "/price/history/" + _productID + "?range=month";
+                client.BaseAddress = new Uri(baseAddress);
+                client.DefaultRequestHeaders.Accept.Add(contentType);
+
+                //var jsonData = JsonConvert.SerializeObject(myJsonO);
+                // var contentData = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                //var contentData = new StringContent(myJson, Encoding.UTF8, "application/json");
+
+                var response = client.GetAsync(api).Result;
+
+                //   return response.Content.ToString();
+                //   return myJson;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var stringData = response.Content.ReadAsStringAsync().Result;
+                    return stringData;
+                }
+                else
+                {
+                    return "";
+                }
+            }
+         }
+
         public static string SearchCard(string _search)
         {
             using (var client = new HttpClient())
