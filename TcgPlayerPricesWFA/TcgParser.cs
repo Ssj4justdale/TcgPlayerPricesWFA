@@ -15,7 +15,7 @@ namespace TcgPlayerPricesWFA
 {
     internal class TcgParser
     {
-        public static string GetCardPriceHistory(string _productID)
+        public static string GetCardPriceHistory(string _productID, string _method = "month")
         {
             //https://infinite-api.tcgplayer.com/price/history/284948?range=month
             //https://infinite-api.tcgplayer.com/price/history/284948?range=quarter
@@ -26,7 +26,7 @@ namespace TcgPlayerPricesWFA
             {
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
                 var baseAddress = "https://infinite-api.tcgplayer.com/";
-                var api = "/price/history/" + _productID + "?range=month";
+                var api = "/price/history/" + _productID + "?range=" + _method;
                 client.BaseAddress = new Uri(baseAddress);
                 client.DefaultRequestHeaders.Accept.Add(contentType);
 
