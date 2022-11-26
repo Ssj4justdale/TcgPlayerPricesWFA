@@ -15,6 +15,7 @@ namespace TcgPlayerPricesWFA
 {
     internal class TcgParser
     {
+
         public static string GetCardPriceHistory(string _productID, string _method = "month")
         {
             //https://infinite-api.tcgplayer.com/price/history/284948?range=month
@@ -53,6 +54,11 @@ namespace TcgPlayerPricesWFA
 
         public static string SearchCard(string _search)
         {
+            CardSets myCardSets = new CardSets();
+            if (myCardSets.ShortCardSetName.ContainsKey(_search) == true)
+            {
+                _search = myCardSets.ShortCardSetName[_search];
+            }
             using (var client = new HttpClient())
             {
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -90,7 +96,6 @@ namespace TcgPlayerPricesWFA
                 {
                     return "";
                 }
-                
             }
         }
     }

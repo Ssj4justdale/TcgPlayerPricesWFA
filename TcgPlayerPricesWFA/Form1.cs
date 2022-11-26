@@ -1,5 +1,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot.WindowsForms;
 using System.CodeDom.Compiler;
 using System.Runtime.CompilerServices;
 using System.Security.Policy;
@@ -80,16 +83,26 @@ namespace TcgPlayerPricesWFA
             double averagePrice = 0.00;
             int myCount = 0;
 
+
+            PlotView myPlotV = ThreadHandler.GeneratePlotView();
+            LineSeries lineSeries = new LineSeries();
+
             foreach (dynamic s in result.result)
             {
                 if (Double.TryParse(s.variants[0].marketPrice.ToString(), out double myDoub))
                 {
+                    ThreadHandler.PlotPoints(lineSeries, DateTimeAxis.ToDouble(DateTime.Parse(s.date.ToString())), myDoub);
                     averagePrice += myDoub;
                     myCount++;
                 }
                 else { break; }
 
             }
+
+            ThreadHandler.GenerateAxesis(myPlotV);
+            ThreadHandler.GenerateModel(myPlotV, lineSeries);
+
+            ThreadHandler.DisplayForm2(myPlotV, row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString(), row.Cells[2].Value.ToString());
 
             averagePrice = (double)averagePrice / (double)myCount;
 

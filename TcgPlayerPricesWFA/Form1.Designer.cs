@@ -33,16 +33,18 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
             this.cardName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cardNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cardRarity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cardSet = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cardPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.productId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -122,16 +124,6 @@
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(1120, 170);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 12);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
             // cardName
             // 
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.Black;
@@ -176,6 +168,27 @@
             this.productId.ReadOnly = true;
             this.productId.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1120, 170);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 12);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Image = ((System.Drawing.Image)(resources.GetObject("label2.Image")));
+            this.label2.Location = new System.Drawing.Point(6, 9);
+            this.label2.MaximumSize = new System.Drawing.Size(1300, 0);
+            this.label2.MinimumSize = new System.Drawing.Size(1306, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(1306, 66);
+            this.label2.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AcceptButton = this.button1;
@@ -184,6 +197,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1321, 600);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
@@ -213,6 +227,7 @@
         private DataGridViewTextBoxColumn cardSet;
         private DataGridViewTextBoxColumn cardPrice;
         private DataGridViewTextBoxColumn productId;
+        private Label label2;
         //private Button button1;
     }
 }
