@@ -1,4 +1,6 @@
 ﻿
+#pragma warning disable CS8618
+
 using Microsoft.VisualBasic;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -63,9 +65,9 @@ public class ThreadHandler
         plot1.Model.Series.Add(lineSeries);
     }
 
-    public static void DisplayForm2(PlotView myPlotView, string _cardName, string _cardNumber, string _cardRarity)
+    public static void DisplayForm2(PlotView _mView, PlotView _qView, PlotView _sView, PlotView _aView, string _cardName, string _cardNumber, string _cardRarity)
     {
-        Form2 newForm = new Form2(myPlotView);
+        Form2 newForm = new Form2(_mView, _qView, _sView, _aView);
         newForm.Text = _cardName + " :: " + _cardNumber + " // " + _cardRarity;
 
         threadForm2 = new Thread((ThreadStart)delegate { Application.Run(newForm); }); //Initialize a new Thread of name myThread to call Application.Run() on a new instance of ViewSecond                                                                                      //myThread.TrySetApartmentState(ApartmentState.STA); //If you receive errors, comment this out; use this when doing interop with STA COM objects.

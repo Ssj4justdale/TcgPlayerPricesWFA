@@ -10,6 +10,7 @@ using System.Security.Policy;
 #pragma warning disable CS8602
 #pragma warning disable CS8604
 #pragma warning disable CS0219
+#pragma warning disable CS8600
 
 namespace TcgPlayerPricesWFA
 {
@@ -28,7 +29,8 @@ namespace TcgPlayerPricesWFA
 
         public void UpdateDisplayData(string _input)
         {
-            var myJSON = TcgParser.SearchCard(_input);
+            var myQuery = TcgParser.SearchCard(_input);
+            var myJSON = myQuery[0];
             var result = JsonConvert.DeserializeObject<dynamic>(myJSON);
             string[] AHRecord = new string[] { };
 
@@ -41,10 +43,15 @@ namespace TcgPlayerPricesWFA
             foreach (dynamic s in result.results[0].results)
             {
                 if (s.marketPrice <= 0) continue;
+                if (myQuery[1] != "")
+                {
+                    if (s.customAttributes.number.ToString() != myQuery[1]) continue;
+                }
                 AHRecord = new string[] { s.productName, s.customAttributes.number, s.rarityName, s.setName, string.Format("{0:C2}", s.marketPrice), s.productId.ToString() };
                 dataGridView1.Rows.Add(AHRecord);
                 myInt++;
             }
+            
 
             
             /*
@@ -77,6 +84,7 @@ namespace TcgPlayerPricesWFA
 
             DataGridViewRow row = dataGridView1.Rows[rowIndex];
 
+            //monthly view
             var myJSON = TcgParser.GetCardPriceHistory(row.Cells[5].Value.ToString());
             var result = JsonConvert.DeserializeObject<dynamic>(myJSON);
 
@@ -84,7 +92,7 @@ namespace TcgPlayerPricesWFA
             int myCount = 0;
 
 
-            PlotView myPlotV = ThreadHandler.GeneratePlotView();
+            PlotView _mPlotView = ThreadHandler.GeneratePlotView();
             LineSeries lineSeries = new LineSeries();
 
             foreach (dynamic s in result.result)
@@ -99,10 +107,94 @@ namespace TcgPlayerPricesWFA
 
             }
 
-            ThreadHandler.GenerateAxesis(myPlotV);
-            ThreadHandler.GenerateModel(myPlotV, lineSeries);
+            ThreadHandler.GenerateAxesis(_mPlotView);
+            ThreadHandler.GenerateModel(_mPlotView, lineSeries);
 
-            ThreadHandler.DisplayForm2(myPlotV, row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString(), row.Cells[2].Value.ToString());
+            //quarterly view
+            PlotView _qPlotView = ThreadHandler.GeneratePlotView();
+            Thread _qThread = new Thread((ThreadStart)delegate
+            {
+                var _qMyJSON = TcgParser.GetCardPriceHistory(row.Cells[5].Value.ToString(), "quarter");
+                var _qResult = JsonConvert.DeserializeObject<dynamic>(_qMyJSON);
+
+                LineSeries _qLineSeries = new LineSeries();
+
+                foreach (dynamic s in _qResult.result)
+                {
+                    if (Double.TryParse(s.variants[0].marketPrice.ToString(), out double myDoub))
+                    {
+                        ThreadHandler.PlotPoints(_qLineSeries, DateTimeAxis.ToDouble(DateTime.Parse(s.date.ToString())), myDoub);
+                    }
+                    else { break; }
+
+                }
+
+                ThreadHandler.GenerateAxesis(_qPlotView);
+                ThreadHandler.GenerateModel(_qPlotView, _qLineSeries);
+            });
+ 
+
+            //semi-annual view
+            PlotView _sPlotView = ThreadHandler.GeneratePlotView();
+            Thread _sThread = new Thread((ThreadStart)delegate {
+                //semi-annual view
+                var _sMyJSON = TcgParser.GetCardPriceHistory(row.Cells[5].Value.ToString(), "semi-annual");
+                var _sResult = JsonConvert.DeserializeObject<dynamic>(_sMyJSON);
+
+                
+                LineSeries _sLineSeries = new LineSeries();
+
+                foreach (dynamic s in _sResult.result)
+                {
+                    if (Double.TryParse(s.variants[0].marketPrice.ToString(), out double myDoub))
+                    {
+                        ThreadHandler.PlotPoints(_sLineSeries, DateTimeAxis.ToDouble(DateTime.Parse(s.date.ToString())), myDoub);
+                    }
+                    else { break; }
+
+                }
+
+                ThreadHandler.GenerateAxesis(_sPlotView);
+                ThreadHandler.GenerateModel(_sPlotView, _sLineSeries);
+            });
+
+
+
+
+            //annual view
+            PlotView _aPlotView = ThreadHandler.GeneratePlotView();
+            Thread _aThread = new Thread((ThreadStart)delegate
+            {
+                var _aMyJSON = TcgParser.GetCardPriceHistory(row.Cells[5].Value.ToString(), "semi-annual");
+                var _aResult = JsonConvert.DeserializeObject<dynamic>(_aMyJSON);
+
+                LineSeries _aLineSeries = new LineSeries();
+
+                foreach (dynamic s in _aResult.result)
+                {
+                    if (Double.TryParse(s.variants[0].marketPrice.ToString(), out double myDoub))
+                    {
+                        ThreadHandler.PlotPoints(_aLineSeries, DateTimeAxis.ToDouble(DateTime.Parse(s.date.ToString())), myDoub);
+                    }
+                    else { break; }
+
+                }
+
+                ThreadHandler.GenerateAxesis(_aPlotView);
+                ThreadHandler.GenerateModel(_aPlotView, _aLineSeries);
+
+            });
+
+            _qThread.Start();
+            _sThread.Start();
+            _aThread.Start();
+           
+
+
+            //end styles
+
+
+            ThreadHandler.DisplayForm2(_mPlotView, _qPlotView, _sPlotView, _aPlotView, row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString(), row.Cells[2].Value.ToString());
 
             averagePrice = (double)averagePrice / (double)myCount;
 
@@ -132,6 +224,14 @@ namespace TcgPlayerPricesWFA
                 row.Cells[cIndex].Value = row.Cells[cIndex].Value.ToString() + "\n\nAverage Price: " + string.Format("{0:C2}", Double.Parse(averagePrice.ToString())) + "\nMarket Price: " + row.Cells[cIndex].Value.ToString();
 
             }
+
+            _qThread.Join();
+            _sThread.Join();
+            _aThread.Join();
+
+            _qThread = null;
+            _sThread = null;
+            _aThread = null;
 
         }
 

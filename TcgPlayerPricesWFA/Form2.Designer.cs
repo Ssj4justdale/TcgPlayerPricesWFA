@@ -28,13 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.monthlyButton = new System.Windows.Forms.Button();
+            this.quarterButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // monthlyButton
+            // 
+            this.monthlyButton.Location = new System.Drawing.Point(658, 144);
+            this.monthlyButton.Name = "monthlyButton";
+            this.monthlyButton.Size = new System.Drawing.Size(75, 23);
+            this.monthlyButton.TabIndex = 1;
+            this.monthlyButton.Text = "1m";
+            this.monthlyButton.UseVisualStyleBackColor = true;
+            this.monthlyButton.Click += new System.EventHandler(this.monthlyButton_Click);
+            // 
+            // quarterButton
+            // 
+            this.quarterButton.Location = new System.Drawing.Point(658, 173);
+            this.quarterButton.Name = "quarterButton";
+            this.quarterButton.Size = new System.Drawing.Size(75, 23);
+            this.quarterButton.TabIndex = 2;
+            this.quarterButton.Text = "3m";
+            this.quarterButton.UseVisualStyleBackColor = true;
+            this.quarterButton.Click += new System.EventHandler(this.quarterButton_Click);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 361);
+            this.ClientSize = new System.Drawing.Size(819, 361);
+            this.Controls.Add(this.quarterButton);
+            this.Controls.Add(this.monthlyButton);
             this.Name = "Form2";
             this.Text = "Form2";
             this.TopMost = true;
@@ -44,5 +68,7 @@
 
 
         #endregion
+        private Button monthlyButton;
+        private Button quarterButton;
     }
 }

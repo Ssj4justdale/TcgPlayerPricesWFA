@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable CS0219
+#pragma warning disable CS8602
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,10 +55,49 @@ namespace TcgPlayerPricesWFA
             }
          }
 
-        public static string SearchCard(string _search)
+        public static string DecipherNameFromTag(string _cardNumber)
         {
+            using (var client = new HttpClient())
+            {
+                var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+                var baseAddress = "http://yugiohprices.com";
+                var api = "/api/price_for_print_tag/" + _cardNumber;
+                client.BaseAddress = new Uri(baseAddress);
+                client.DefaultRequestHeaders.Accept.Add(contentType);
+
+                //var jsonData = JsonConvert.SerializeObject(myJsonO);
+                // var contentData = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                //var contentData = new StringContent(myJson, Encoding.UTF8, "application/json");
+
+                var response = client.GetAsync(api).Result;
+
+                //   return response.Content.ToString();
+                //   return myJson;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var stringData = response.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<dynamic>(stringData);
+                    return result.data.name.ToString();
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        }
+
+        public static string[] SearchCard(string _search)
+        {
+            bool _foundMatch = false;
+            string _setID = "";
             CardSets myCardSets = new CardSets();
-            if (myCardSets.ShortCardSetName.ContainsKey(_search) == true)
+            if (_search.Contains("-EN"))
+            {
+                _foundMatch = true;
+                _setID = _search;
+                _search = DecipherNameFromTag(_search);
+            } else if (myCardSets.ShortCardSetName.ContainsKey(_search) == true)
             {
                 _search = myCardSets.ShortCardSetName[_search];
             }
@@ -90,11 +132,11 @@ namespace TcgPlayerPricesWFA
                 if (response.IsSuccessStatusCode)
                 {
                     var stringData = response.Content.ReadAsStringAsync().Result;
-                    return stringData;
+                    return new string[] { stringData, _setID , _setID.Split("-")[0] };
                 }
                 else
                 {
-                    return "";
+                    return new string[] { "", "", "" };
                 }
             }
         }
