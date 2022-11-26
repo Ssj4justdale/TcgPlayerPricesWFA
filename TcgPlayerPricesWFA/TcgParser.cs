@@ -73,11 +73,11 @@ namespace TcgPlayerPricesWFA
 
                 //   return response.Content.ToString();
                 //   return myJson;
-
                 if (response.IsSuccessStatusCode)
                 {
                     var stringData = response.Content.ReadAsStringAsync().Result;
                     var result = JsonConvert.DeserializeObject<dynamic>(stringData);
+                    if (stringData.Contains("{\"status\":\"fail\"")) return "";
                     return result.data.name.ToString();
                 }
                 else
@@ -91,8 +91,10 @@ namespace TcgPlayerPricesWFA
         {
             bool _foundMatch = false;
             string _setID = "";
+            string _newSearch = _search;
+            //if (_search.Length <= 5) { _setID = _search; }
             CardSets myCardSets = new CardSets();
-            if (_search.Contains("-EN"))
+            if ((_search.Contains("-EN") || (_search.Contains("-0") && _search.Contains("DL"))) && _search.Split("-").Length == 2)
             {
                 _foundMatch = true;
                 _setID = _search;
@@ -101,11 +103,14 @@ namespace TcgPlayerPricesWFA
             {
                 _search = myCardSets.ShortCardSetName[_search];
             }
+
+            if (_search == "") _search = _newSearch;
+
             using (var client = new HttpClient())
             {
                 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
                 var baseAddress = "https://mpapi.tcgplayer.com";
-                var api = "/v2/search/request?q=" + _search + "&isList=false";
+                var api = "/v2/search/request?q=" + _search.Replace(" ", "+") + "&isList=false";
                 client.BaseAddress = new Uri(baseAddress);
                 client.DefaultRequestHeaders.Accept.Add(contentType);
 
@@ -132,7 +137,7 @@ namespace TcgPlayerPricesWFA
                 if (response.IsSuccessStatusCode)
                 {
                     var stringData = response.Content.ReadAsStringAsync().Result;
-                    return new string[] { stringData, _setID , _setID.Split("-")[0] };
+                    return new string[] { stringData, _setID , _setID.Split("-")[0]};
                 }
                 else
                 {

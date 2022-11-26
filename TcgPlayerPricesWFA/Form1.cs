@@ -38,11 +38,11 @@ namespace TcgPlayerPricesWFA
 
             dataGridView1.Rows.Clear();
 
-
+            if ((myQuery[0] == "" || _input=="") || (myQuery[0] == null || _input == null || result == null)) return;
 
             foreach (dynamic s in result.results[0].results)
             {
-                if (s.marketPrice <= 0) continue;
+                if (s.marketPrice <= 0 || s?.customAttributes?.number == null) continue;
                 if (myQuery[1] != "")
                 {
                     if (s.customAttributes.number.ToString() != myQuery[1]) continue;
