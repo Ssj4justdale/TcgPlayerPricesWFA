@@ -19,7 +19,7 @@ namespace TcgPlayerPricesWFA
         private PlotView semiView;
         private PlotView annualView;
 
-        public Form2(PlotView _mView, PlotView _qView, PlotView _sView, PlotView _aView)
+        public Form2(PlotView _mView, PlotView _qView, PlotView _sView, PlotView _aView, string _cardTcgID)
         {
             InitializeComponent();
             Controls.Add(_mView);
@@ -31,6 +31,8 @@ namespace TcgPlayerPricesWFA
             this.quarterView = _qView;
             this.semiView = _sView;
             this.annualView = _aView;
+
+            this.pictureBox1.ImageLocation = $"https://product-images.tcgplayer.com/fit-in/437x437/{_cardTcgID}.jpg";
         }
 
         private void plotView1_Click(object sender, EventArgs e)
@@ -80,6 +82,16 @@ namespace TcgPlayerPricesWFA
         private void quarterButton_Click(object sender, EventArgs e)
         {
             quarterChartView();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            semiChartView();
+        }
+
+        private void annualButton_Click(object sender, EventArgs e)
+        {
+            annualChartView();
         }
     }
 }

@@ -25,17 +25,19 @@ public class ThreadHandler
 
     }
 
-    public static void GenerateAxesis(PlotView myPlotView)
+    public static void GenerateAxesis(PlotView myPlotView, int _ident = 0)
     {
         var xAxis = new DateTimeAxis
         {
             Position = AxisPosition.Bottom,
+            StringFormat = "MM/dd/yyyy",
             Title = "Date",
             IntervalLength = 75,
             MinorIntervalType = DateTimeIntervalType.Days,
             IntervalType = DateTimeIntervalType.Days,
             MajorGridlineStyle = LineStyle.Solid,
             MinorGridlineStyle = LineStyle.None,
+            IsZoomEnabled = false,
         };
 
         var yAxis = new LinearAxis
@@ -43,7 +45,8 @@ public class ThreadHandler
             Position = AxisPosition.Left,
             Title = "Value",
             MajorGridlineStyle = LineStyle.Solid,
-            MinorGridlineStyle = LineStyle.None
+            MinorGridlineStyle = LineStyle.None,
+            IsZoomEnabled = false,
         };
 
         myPlotView.Model.Axes.Add(xAxis);
@@ -57,6 +60,7 @@ public class ThreadHandler
             Width = 650,
             Height = 350,
             Model = new PlotModel() { },
+            
         };
     }
 
@@ -65,12 +69,17 @@ public class ThreadHandler
         plot1.Model.Series.Add(lineSeries);
     }
 
-    public static void DisplayForm2(PlotView _mView, PlotView _qView, PlotView _sView, PlotView _aView, string _cardName, string _cardNumber, string _cardRarity)
+    public static void DisplayForm2(PlotView _mView, PlotView _qView, PlotView _sView, PlotView _aView, string _cardName, string _cardNumber, string _cardRarity, string _cardTcgID)
     {
-        Form2 newForm = new Form2(_mView, _qView, _sView, _aView);
+        Form2 newForm = new Form2(_mView, _qView, _sView, _aView, _cardTcgID);
         newForm.Text = _cardName + " :: " + _cardNumber + " // " + _cardRarity;
 
         threadForm2 = new Thread((ThreadStart)delegate { Application.Run(newForm); }); //Initialize a new Thread of name myThread to call Application.Run() on a new instance of ViewSecond                                                                                      //myThread.TrySetApartmentState(ApartmentState.STA); //If you receive errors, comment this out; use this when doing interop with STA COM objects.
         threadForm2.Start(); //Start the thread; Run the form
     }
 }
+
+
+
+
+

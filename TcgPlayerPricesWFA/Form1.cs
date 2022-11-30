@@ -21,6 +21,7 @@ namespace TcgPlayerPricesWFA
             InitializeComponent();
             this.textBox1.KeyDown += textBox1_KeyDown;
             this.dataGridView1.CellClick += dataGridView1_CellClick;
+            this.dataGridView1.SortCompare += dataGridView1_SortCompare;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -29,6 +30,7 @@ namespace TcgPlayerPricesWFA
 
         public void UpdateDisplayData(string _input)
         {
+            if (_input == "") return;
             var myQuery = TcgParser.SearchCard(_input);
             var myJSON = myQuery[0];
             var result = JsonConvert.DeserializeObject<dynamic>(myJSON);
@@ -165,7 +167,7 @@ namespace TcgPlayerPricesWFA
             PlotView _aPlotView = ThreadHandler.GeneratePlotView();
             Thread _aThread = new Thread((ThreadStart)delegate
             {
-                var _aMyJSON = TcgParser.GetCardPriceHistory(row.Cells[5].Value.ToString(), "semi-annual");
+                var _aMyJSON = TcgParser.GetCardPriceHistory(row.Cells[5].Value.ToString(), "annual");
                 var _aResult = JsonConvert.DeserializeObject<dynamic>(_aMyJSON);
 
                 LineSeries _aLineSeries = new LineSeries();
@@ -194,7 +196,7 @@ namespace TcgPlayerPricesWFA
             //end styles
 
 
-            ThreadHandler.DisplayForm2(_mPlotView, _qPlotView, _sPlotView, _aPlotView, row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString(), row.Cells[2].Value.ToString());
+            ThreadHandler.DisplayForm2(_mPlotView, _qPlotView, _sPlotView, _aPlotView, row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString(), row.Cells[2].Value.ToString(), row.Cells[5].Value.ToString());
 
             averagePrice = (double)averagePrice / (double)myCount;
 
@@ -264,6 +266,42 @@ namespace TcgPlayerPricesWFA
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+
+        private void dataGridView1_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            // Try to sort based on the cells in the current column.
+            if(e.Column.Index == 4)
+            {
+                e.SortResult = ColumnFourCompare(e.CellValue1.ToString(), e.CellValue2.ToString());
+
+            } else
+            {
+                e.SortResult = System.String.Compare(e.CellValue1.ToString(), e.CellValue2.ToString());
+            }
+
+            e.Handled = true;
+        }
+
+        public int ColumnFourCompare(string X, string Y)
+        {
+            double _x = Double.Parse(X.Split("$")[1]);
+            double _y = Double.Parse(Y.Split("$")[1]);
+
+            int _return = 0;
+            if(_x > _y)
+            {
+                _return = 1;
+            } else if(_x == _y)
+            {
+                _return = 0;
+            } else if(_x < _y)
+            {
+                _return = -1;
+            }
+
+            return _return;
         }
     }
 }
